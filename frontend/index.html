@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>图书管理系统</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        input, button { margin: 5px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+<div id="app">
+    <h1>图书管理系统</h1>
+    <div>
+        <h2>新书录入</h2>
+        <input v-model="newBook.title" placeholder="书名">
+        <input v-model="newBook.author" placeholder="作者">
+        <input v-model="newBook.category" placeholder="分类">
+        <input v-model="newBook.location" placeholder="存放位置">
+        <button @click="addBook">添加</button>
+    </div>
+    <div>
+        <h2>书目列表</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th><th>书名</th><th>作者</th><th>分类</th><th>位置</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="b in books" :key="b.id">
+                    <td>{{ b.id }}</td>
+                    <td>{{ b.title }}</td>
+                    <td>{{ b.author }}</td>
+                    <td>{{ b.category }}</td>
+                    <td>{{ b.location }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+const { createApp } = Vue;
+createApp({
+    data() {
+        return {
+            books: [],
+            newBook: { title: '', author: '', category: '', location: '' }
+        }
+    },
+    methods: {
+        loadBooks() {
+            axios.get('/books').then(r => { this.books = r.data; });
+        },
+        addBook() {
+            axios.post('/books', this.newBook).then(() => {
+                this.newBook = { title: '', author: '', category: '', location: '' };
+                this.loadBooks();
+            });
+        }
+    },
+    mounted() {
+        this.loadBooks();
+    }
+}).mount('#app');
+</script>
+</body>
+</html>
