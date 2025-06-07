@@ -26,3 +26,8 @@
 6、《借阅数量分析（按书目）》主要用于按书目汇总的每日、每月借阅数量统计；
 7、《借阅数量分析（按学生）》主要用于按学生汇总的每日、每月借阅数量统计；
 8、《图书存放位置分析》所有图书的位置信息汇总及分析（包括已借出和在馆）。
+
+六、运行与部署
+1、后端启动：进入 `server` 目录后执行 `mvn spring-boot:run` 启动 Spring Boot 服务。
+2、前端部署：可以使用任意静态 HTTP 服务器（如执行 `npx http-server frontend`）对 `frontend/` 目录进行服务，
+   或将该目录内容拷贝到 `server/src/main/resources/static/` 下，由 Spring Boot 直接提供。如此浏览器访问接口时可避免 CORS 问题。
