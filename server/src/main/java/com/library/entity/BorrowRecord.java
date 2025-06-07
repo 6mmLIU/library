@@ -7,7 +7,10 @@ import java.time.LocalDate;
  */
 public class BorrowRecord {
     private Long id;
-    private Long bookId;
+    /**
+     * ID of the borrowed book copy.
+     */
+    private Long copyId;
     private String borrower;
     private LocalDate borrowDate;
     private LocalDate returnDate;
@@ -19,11 +22,12 @@ public class BorrowRecord {
     public void setId(Long id) {
         this.id = id;
     }
-    public Long getBookId() {
-        return bookId;
+    public Long getCopyId() {
+        return copyId;
     }
-    public void setBookId(Long bookId) {
-        this.bookId = bookId;
+
+    public void setCopyId(Long copyId) {
+        this.copyId = copyId;
     }
     public String getBorrower() {
         return borrower;

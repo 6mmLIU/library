@@ -19,7 +19,7 @@ public class BorrowService {
     }
 
     /**
-     * Borrow a book by creating a record.
+     * Borrow a book copy by creating a record.
      */
     public BorrowRecord borrowBook(BorrowRecord record) {
         record.setBorrowDate(LocalDate.now());
