@@ -3,232 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <title>图书管理系统</title>
-    <!-- Vue 3 and axios via CDN -->
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+    <script src="https://unpkg.com/vue@3"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <!-- 简单的美化样式，提供流畅的交互体验 -->
+    <script src="https://unpkg.com/element-plus"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f8f8f8;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        section {
-            background: #fff;
-            padding: 15px 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        input {
-            margin: 5px;
-            padding: 5px 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            margin: 5px;
-            padding: 6px 12px;
-            background-color: #409eff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color .2s ease;
-        }
-        button:hover {
-            background-color: #66b1ff;
-        }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-top: 10px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        tr:nth-child(even) {
-            background-color: #fafafa;
-        }
+        body { margin: 20px; background-color: #f5f5f5; }
+        h1 { text-align: center; margin-bottom: 20px; }
+        .block { margin-bottom: 30px; }
     </style>
 </head>
 <body>
 <div id="app">
-    <h1>图书管理系统</h1>
+    <el-container>
+        <el-header>
+            <h1>图书管理系统</h1>
+        </el-header>
+        <el-main>
+            <div class="block">
+                <el-card shadow="always">
+                    <template #header>新书录入</template>
+                    <el-form :model="newBook" inline>
+                        <el-form-item label="书名">
+                            <el-input v-model="newBook.title" placeholder="书名"></el-input>
+                        </el-form-item>
+                        <el-form-item label="作者">
+                            <el-input v-model="newBook.author" placeholder="作者"></el-input>
+                        </el-form-item>
+                        <el-form-item label="分类">
+                            <el-input v-model="newBook.category" placeholder="分类"></el-input>
+                        </el-form-item>
+                        <el-form-item label="存放位置">
+                            <el-input v-model="newBook.location" placeholder="存放位置"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="addBook">添加</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-card>
+            </div>
 
-    <!-- 新书录入区域 -->
-    <section>
-        <h2>新书录入</h2>
-        <!-- 双向绑定输入框，用于添加书目 -->
-        <input v-model="newBook.title" placeholder="书名">
-        <input v-model="newBook.author" placeholder="作者">
-        <input v-model="newBook.category" placeholder="分类">
-        <input v-model="newBook.location" placeholder="存放位置">
-        <button @click="addBook">添加</button>
-    </section>
+            <div class="block">
+                <el-card shadow="always">
+                    <template #header>图书编码录入</template>
+                    <el-form :model="newCopy" inline>
+                        <el-form-item label="书目ID">
+                            <el-input v-model.number="newCopy.bookId" placeholder="书目ID"></el-input>
+                        </el-form-item>
+                        <el-form-item label="条码">
+                            <el-input v-model="newCopy.code" placeholder="条码"></el-input>
+                        </el-form-item>
+                        <el-form-item label="存放位置">
+                            <el-input v-model="newCopy.location" placeholder="存放位置"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="addCopy">添加</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-card>
+            </div>
 
-    <!-- 图书副本（条码）录入 -->
-    <section>
-        <h2>图书编码录入</h2>
-        <input v-model.number="newCopy.bookId" placeholder="书目ID">
-        <input v-model="newCopy.code" placeholder="条码">
-        <input v-model="newCopy.location" placeholder="存放位置">
-        <button @click="addCopy">添加</button>
-    </section>
+            <div class="block">
+                <el-card shadow="always">
+                    <template #header>书目列表</template>
+                    <el-table :data="books" style="width: 100%">
+                        <el-table-column prop="id" label="ID" width="60"></el-table-column>
+                        <el-table-column prop="title" label="书名"></el-table-column>
+                        <el-table-column prop="author" label="作者"></el-table-column>
+                        <el-table-column prop="category" label="分类"></el-table-column>
+                        <el-table-column prop="location" label="位置"></el-table-column>
+                    </el-table>
+                </el-card>
+            </div>
 
-    <!-- 书目列表展示 -->
-    <section>
-        <h2>书目列表</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th><th>书名</th><th>作者</th><th>分类</th><th>位置</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="b in books" :key="b.id">
-                    <td>{{ b.id }}</td>
-                    <td>{{ b.title }}</td>
-                    <td>{{ b.author }}</td>
-                    <td>{{ b.category }}</td>
-                    <td>{{ b.location }}</td>
-                </tr>
-            </tbody>
-        </table>
-    </section>
+            <div class="block">
+                <el-card shadow="always">
+                    <template #header>书籍副本列表</template>
+                    <el-table :data="copies" style="width: 100%">
+                        <el-table-column prop="id" label="ID" width="60"></el-table-column>
+                        <el-table-column prop="bookId" label="书目ID"></el-table-column>
+                        <el-table-column prop="code" label="条码"></el-table-column>
+                        <el-table-column prop="location" label="位置"></el-table-column>
+                    </el-table>
+                </el-card>
+            </div>
 
-    <!-- 书籍副本列表 -->
-    <section>
-        <h2>书籍副本列表</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th><th>书目ID</th><th>条码</th><th>位置</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="c in copies" :key="c.id">
-                    <td>{{ c.id }}</td>
-                    <td>{{ c.bookId }}</td>
-                    <td>{{ c.code }}</td>
-                    <td>{{ c.location }}</td>
-                </tr>
-            </tbody>
-        </table>
-    </section>
-
-    <!-- 借书与还书 -->
-    <section>
-        <h2>借书/还书</h2>
-        <!-- 借书操作表单 -->
-        <div>
-            <input v-model.number="newBorrow.copyId" placeholder="副本ID">
-            <input v-model="newBorrow.borrower" placeholder="借阅人">
-            <button @click="borrow">借书</button>
-        </div>
-        <!-- 还书操作表单 -->
-        <div>
-            <input v-model.number="returnId" placeholder="借阅记录ID">
-            <button @click="returnBook">还书</button>
-        </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th><th>副本ID</th><th>借阅人</th><th>借出日期</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="b in borrows" :key="b.id">
-                    <td>{{ b.id }}</td>
-                    <td>{{ b.copyId }}</td>
-                    <td>{{ b.borrower }}</td>
-                    <td>{{ b.borrowDate }}</td>
-                </tr>
-            </tbody>
-        </table>
-    </section>
+            <div class="block">
+                <el-card shadow="always">
+                    <template #header>借书/还书</template>
+                    <el-form :model="newBorrow" inline>
+                        <el-form-item label="副本ID">
+                            <el-input v-model.number="newBorrow.copyId" placeholder="副本ID"></el-input>
+                        </el-form-item>
+                        <el-form-item label="借阅人">
+                            <el-input v-model="newBorrow.borrower" placeholder="借阅人"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="borrow">借书</el-button>
+                        </el-form-item>
+                    </el-form>
+                    <el-divider></el-divider>
+                    <el-form inline>
+                        <el-form-item label="借阅记录ID">
+                            <el-input v-model.number="returnId" placeholder="借阅记录ID"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="success" @click="returnBook">还书</el-button>
+                        </el-form-item>
+                    </el-form>
+                    <el-table :data="borrows" style="width: 100%; margin-top: 10px;">
+                        <el-table-column prop="id" label="ID" width="60"></el-table-column>
+                        <el-table-column prop="copyId" label="副本ID"></el-table-column>
+                        <el-table-column prop="borrower" label="借阅人"></el-table-column>
+                        <el-table-column prop="borrowDate" label="借出日期"></el-table-column>
+                    </el-table>
+                </el-card>
+            </div>
+        </el-main>
+    </el-container>
 </div>
-<script>
-const { createApp } = Vue;
-createApp({
-    data() {
-        return {
-            // 所有书目列表
-            books: [],
-            // 所有书籍副本列表
-            copies: [],
-            // 当前借出记录列表
-            borrows: [],
-            // 新书表单数据
-            newBook: { title: '', author: '', category: '', location: '' },
-            // 新副本表单数据
-            newCopy: { bookId: '', code: '', location: '' },
-            // 借书表单数据
-            newBorrow: { copyId: '', borrower: '' },
-            // 还书记录ID
-            returnId: ''
-        }
-    },
-    methods: {
-        // 下面的加载函数分别从后端获取数据
-        loadBooks() {
-            axios.get('/books').then(r => { this.books = r.data; });
-        },
-        loadCopies() {
-            axios.get('/copies').then(r => { this.copies = r.data; });
-        },
-        loadBorrows() {
-            axios.get('/borrows').then(r => { this.borrows = r.data; });
-        },
-
-        // 新增书目
-        addBook() {
-            axios.post('/books', this.newBook).then(() => {
-                this.newBook = { title: '', author: '', category: '', location: '' };
-                this.loadBooks();
-            });
-        },
-
-        // 新增书籍副本
-        addCopy() {
-            axios.post('/copies', this.newCopy).then(() => {
-                this.newCopy = { bookId: '', code: '', location: '' };
-                this.loadCopies();
-            });
-        },
-
-        // 借书操作
-        borrow() {
-            axios.post('/borrows', this.newBorrow).then(() => {
-                this.newBorrow = { copyId: '', borrower: '' };
-                this.loadBorrows();
-            });
-        },
-
-        // 归还书籍
-        returnBook() {
-            axios.post(`/borrows/${this.returnId}/return`).then(() => {
-                this.returnId = '';
-                this.loadBorrows();
-            });
-        }
-    },
-    // 页面挂载完成后立即加载数据
-    mounted() {
-        this.loadBooks();
-        this.loadCopies();
-        this.loadBorrows();
-    }
-}).mount('#app');
-</script>
+<script type="module" src="js/main.js"></script>
 </body>
 </html>
