@@ -11,8 +11,8 @@ import java.util.List;
 @Mapper
 public interface BorrowRecordMapper {
 
-    @Insert("INSERT INTO borrow_record(book_id, borrower, borrow_date, return_date) " +
-            "VALUES(#{bookId}, #{borrower}, #{borrowDate}, #{returnDate})")
+    @Insert("INSERT INTO borrow_record(copy_id, borrower, borrow_date, return_date) " +
+            "VALUES(#{copyId}, #{borrower}, #{borrowDate}, #{returnDate})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(BorrowRecord record);
 

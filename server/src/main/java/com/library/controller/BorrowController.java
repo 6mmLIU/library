@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * REST endpoints for borrow and return actions.
+ * REST endpoints for borrow and return actions on book copies.
  */
 @RestController
 @RequestMapping("/borrows")
